@@ -225,40 +225,200 @@ namespace MyDictionary
                         using (ExcelPackage package = new ExcelPackage(existingFile))
                         {
 
-                            ExcelWorksheet worksheet = package.Workbook.Worksheets[0];//EAT
-                            int colCount = worksheet.Dimension.End.Column;  //get Column Count
-                            int rowCount = worksheet.Dimension.End.Row;     //get row count
+                            /* ExcelWorksheet worksheet = package.Workbook.Worksheets[0];//EAT
+                             int colCount = worksheet.Dimension.End.Column;  //get Column Count
+                             int rowCount = worksheet.Dimension.End.Row;     //get row count
 
-                            for (int row = 1; row <= rowCount; row++)
+                             for (int row = 1; row <= rowCount; row++)
+                             {
+
+
+                                 if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Value?.ToString().Trim()))
+                                 {
+                                     if (!worksheet.Cells[row, 1].Value.ToString().Trim().Contains(" "))
+                                     {
+                                         string cri = worksheet.Cells[row, 1].Value?.ToString().Trim().ToLower();
+                                         //this.toolStripStatusLabel1.Text = "check:" + cri;
+
+                                         this.table1BindingSource.Filter = "WordEng = '" + cri + "'";
+                                         //  System.Threading.Thread.Sleep(1000);
+                                         // MessageBox.Show(cri + "\n" + textBox1.Text);
+                                         if (string.IsNullOrEmpty(textBox1.Text))
+                                         {
+                                             i++;
+                                             table1TableAdapter.Insert(cri,
+                                                   worksheet.Cells[row, 2].Value?.ToString().Trim(),
+                                                   worksheet.Cells[row, 3].Value?.ToString().Trim());
+
+                                             s += "_" + worksheet.Cells[row, 1].Value?.ToString().Trim();
+                                         }
+
+                                     }
+
+                                 }
+
+
+
+                              }*/
+                            /* string connectionString = Properties.Settings.Default.wordConnectionString;
+                             string insertQuery = "INSERT INTO Table1 (WordEng, _Void, WordTh) VALUES(@WordEng, @_Void, @WordTh)";
+                             string sql = "";
+                             int batchSize = 0;
+                             using (System.Data.OleDb.OleDbConnection connection = new  System.Data.OleDb.OleDbConnection(connectionString))
+                             {
+                                 using (System.Data.OleDb.OleDbCommand command = new System.Data.OleDb.OleDbCommand(insertQuery, connection))
+                                 {
+                                     // define your parameters ONCE outside the loop, and use EXPLICIT typing
+                                     command.Parameters.Add("@WordEng", System.Data.OleDb.OleDbType.LongVarWChar);
+                                     command.Parameters.Add("@_Void", System.Data.OleDb.OleDbType.LongVarWChar);
+                                     command.Parameters.Add("@WordTh", System.Data.OleDb.OleDbType.LongVarWChar);
+
+                                     connection.Open();
+
+
+                                     foreach (ExcelWorksheet worksheet in package.Workbook.Worksheets)
+                                     {
+
+                                         int colCount = worksheet.Dimension.End.Column;  //get Column Count
+                                         int rowCount = worksheet.Dimension.End.Row;     //get row count
+
+                                         for (int row = 1; row <= rowCount; row++)
+                                         {
+
+
+                                             if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Value?.ToString().Trim()))
+                                             {
+                                                 if (!worksheet.Cells[row, 1].Value.ToString().Trim().Contains(" "))
+                                                 {
+                                                     string cri = worksheet.Cells[row, 1].Value?.ToString().Trim().ToLower();
+                                                     //this.toolStripStatusLabel1.Text = "check:" + cri;
+
+                                                     if (!string.IsNullOrEmpty(cri) &&
+                                                     !string.IsNullOrEmpty(worksheet.Cells[row, 2].Value?.ToString().Trim())
+                                                     && !string.IsNullOrEmpty(worksheet.Cells[row, 3].Value?.ToString().Trim())
+                                                     && !s.Contains(cri))
+                                                     {
+                                                         this.table1BindingSource.Filter = "WordEng = '" + cri + "'";
+                                                         System.Threading.Thread.Sleep(1000);
+                                                         if (string.IsNullOrEmpty(textBox1.Text))
+                                                         {
+                                                             i++;
+                                                             /* table1TableAdapter.Insert(cri,
+                                                                    worksheet.Cells[row, 2].Value?.ToString().Trim(),
+                                                                    worksheet.Cells[row, 3].Value?.ToString().Trim());*
+
+                                                             // now just SET the values
+                                                             command.Parameters["@WordEng"].Value = cri;
+                                                             command.Parameters["@_Void"].Value = worksheet.Cells[row, 2].Value?.ToString().Trim();
+                                                             command.Parameters["@WordTh"].Value = worksheet.Cells[row, 2].Value?.ToString().Trim();
+                                                             command.ExecuteNonQuery();
+                                                             toolStripStatusLabel1.Text = "Add:" + cri;
+                                                             s += "_" + worksheet.Cells[row, 1].Value?.ToString().Trim();
+                                                         }
+
+                                                     }
+
+
+                                                 }
+
+                                             }
+
+
+
+                                         }
+                                     }
+
+                                     connection.Close();
+                                 }
+
+
+
+
+                             }
+                             */
+
+                            //https://stackoverflow.com/questions/2972974/how-should-i-multiple-insert-multiple-records
+                            string connectionString = Properties.Settings.Default.wordConnectionString;
+                           
+                            StringBuilder sql = new StringBuilder("");
+                            int batchSize = 0;
+                            using (System.Data.OleDb.OleDbConnection connection = new System.Data.OleDb.OleDbConnection(connectionString))
                             {
+                                  
+
+                                    connection.Open();
 
 
-                                if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Value?.ToString().Trim()))
-                                {
-                                    if (!worksheet.Cells[row, 1].Value.ToString().Trim().Contains(" "))
+                                    foreach (ExcelWorksheet worksheet in package.Workbook.Worksheets)
                                     {
-                                        string cri = worksheet.Cells[row, 1].Value?.ToString().Trim().ToLower();
-                                        //this.toolStripStatusLabel1.Text = "check:" + cri;
 
-                                        this.table1BindingSource.Filter = "WordEng = '" + cri + "'";
-                                        //  System.Threading.Thread.Sleep(1000);
-                                        // MessageBox.Show(cri + "\n" + textBox1.Text);
-                                        if (string.IsNullOrEmpty(textBox1.Text))
+                                        int colCount = worksheet.Dimension.End.Column;  //get Column Count
+                                        int rowCount = worksheet.Dimension.End.Row;     //get row count
+
+                                        for (int row = 1; row <= rowCount; row++)
                                         {
-                                            i++;
-                                            table1TableAdapter.Insert(worksheet.Cells[row, 1].Value?.ToString().Trim(),
-                                                  worksheet.Cells[row, 2].Value?.ToString().Trim(),
-                                                  worksheet.Cells[row, 3].Value?.ToString().Trim());
 
-                                            s += "_" + worksheet.Cells[row, 1].Value?.ToString().Trim();
+
+                                            if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Value?.ToString().Trim()))
+                                            {
+                                                if (!worksheet.Cells[row, 1].Value.ToString().Trim().Contains(" "))
+                                                {
+                                                    string cri = worksheet.Cells[row, 1].Value?.ToString().Trim().ToLower();
+                                                    //this.toolStripStatusLabel1.Text = "check:" + cri;
+
+                                                    if (!string.IsNullOrEmpty(cri) &&
+                                                    !string.IsNullOrEmpty(worksheet.Cells[row, 2].Value?.ToString().Trim())
+                                                    && !string.IsNullOrEmpty(worksheet.Cells[row, 3].Value?.ToString().Trim())
+                                                    && !s.Contains(cri))
+                                                    {
+                                                        this.table1BindingSource.Filter = "WordEng = '" + cri + "'";
+                                                       // System.Threading.Thread.Sleep(1000);
+                                                        if (string.IsNullOrEmpty(textBox1.Text))
+                                                        {
+                                                            i++;
+
+                                                            String r = String.Format($"('{cri}', '{worksheet.Cells[row, 2].Value?.ToString().Trim()}', '{worksheet.Cells[row, 2].Value?.ToString().Trim()}')");
+                                                            //Add the row to our running SQL batch
+                                                            if (batchSize > 0)
+                                                                sql.AppendLine(",");
+                                                            sql.Append(r);
+                                                            batchSize ++;
+                                                            
+                                                            toolStripStatusLabel1.Text = "Add:" + cri;
+                                                            s += "_" + worksheet.Cells[row, 1].Value?.ToString().Trim();
+                                                            if (batchSize >= 20)
+                                                            {
+                                                                String insertQuery = "INSERT INTO Table1 (WordEng, _Void, WordTh) VALUES" + sql.ToString() + ";";
+                                                            using (System.Data.OleDb.OleDbCommand command = new System.Data.OleDb.OleDbCommand(insertQuery,connection))
+                                                            {
+                                                                command.ExecuteNonQuery();
+                                                                sql.Clear();
+                                                                batchSize = 0;
+                                                                
+                                                            }
+
+                                                        
+                                                        }
+
+                                                    }
+
+
+                                                }
+
+                                            }
+
+
+
                                         }
-
                                     }
 
+                                    connection.Close();
                                 }
+
+
+
+
                             }
-
-
                         };
                         MessageBox.Show($"Add {i} wold");
                         this.table1TableAdapter.Fill(this.wordDataSet.Table1);
